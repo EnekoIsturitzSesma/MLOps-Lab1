@@ -2,6 +2,8 @@ import os
 import pytest
 from PIL import Image
 from click.testing import CliRunner
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from cli.cli import cli
 
 
@@ -39,3 +41,11 @@ def test_cli_normalize(temp_image):
     result = runner.invoke(cli, ["normalize", str(temp_image)])
     assert result.exit_code == 0
     assert "min=" in result.output and "max=" in result.output
+
+
+def test_cli_main_entrypoint():
+    runner = CliRunner()
+    result = runner.invoke(cli, [])
+    assert result.exit_code in (0, 2)
+    assert "Usage:" in result.output
+

@@ -1,13 +1,15 @@
 import pytest
 from PIL import Image
 import numpy as np
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from mylib.model import (
     predict_class,
     resize_image,
     convert_to_grayscale,
     normalize_image,
 )
-
 
 
 @pytest.fixture

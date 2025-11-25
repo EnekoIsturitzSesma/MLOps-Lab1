@@ -8,7 +8,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 from mylib.model import (
     predict_class,
@@ -29,13 +29,12 @@ async def home(request: Request):
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    """Predict the class of an image."""
     try:
         img_bytes = await file.read()
         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
         prediction = predict_class(img)
         return {"prediction": prediction}
-    except Exception:
+    except (ValueError, UnidentifiedImageError):
         return {"error": "Invalid image"}
 
 
@@ -52,7 +51,7 @@ async def resize(
 
         resized = resize_image(img, (width, height))
         return {"width": resized.size[0], "height": resized.size[1]}
-    except Exception:
+    except (ValueError, UnidentifiedImageError):
         return {"error": "Invalid input"}
 
 
@@ -64,7 +63,7 @@ async def grayscale(file: UploadFile = File(...)):
         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
         gray = convert_to_grayscale(img)
         return {"mode": gray.mode}
-    except Exception:
+    except (ValueError, UnidentifiedImageError):
         return {"error": "Invalid input"}
 
 
@@ -79,10 +78,11 @@ async def normalize(file: UploadFile = File(...)):
             "min": float(data.min()),
             "max": float(data.max()),
         }
-    except Exception:
+    except (ValueError, UnidentifiedImageError):
         return {"error": "Invalid input"}
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("api.fastapi_main:app", host="127.0.0.1", port=8000, reload=True)
