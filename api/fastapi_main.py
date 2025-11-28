@@ -29,6 +29,7 @@ async def home(request: Request):
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
+    """Predict randomly the class of an image."""
     try:
         img_bytes = await file.read()
         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")

@@ -3,6 +3,7 @@ import pytest
 from PIL import Image
 from click.testing import CliRunner
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from cli.cli import cli
 
@@ -48,4 +49,3 @@ def test_cli_main_entrypoint():
     result = runner.invoke(cli, [])
     assert result.exit_code in (0, 2)
     assert "Usage:" in result.output
-

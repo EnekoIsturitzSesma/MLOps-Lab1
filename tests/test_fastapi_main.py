@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from PIL import Image
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from api.fastapi_main import app
 
@@ -73,6 +74,7 @@ def test_resize_invalid_dimensions():
     )
     assert response.status_code == 200
     assert "error" in response.json()
+
 
 def test_grayscale():
     img_bytes = create_test_image()
